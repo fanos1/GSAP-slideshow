@@ -21,7 +21,9 @@
 			
 			white-space: nowrap;
 			overflow: hidden;
+		
 		}
+	
 		#sliderImages {
 		
 		}
@@ -50,6 +52,17 @@
 			padding: 5px;
 			background-color: blue;
 		}
+		
+		/* 
+		.overlay {
+		  position: absolute;
+		  left: 0;
+		  top: 0;
+		  background-color: #fff;
+		  width: 100%;
+		  height: 100%;
+		} 
+		*/
 	</style>
 
 </head>
@@ -60,12 +73,14 @@
     
     <div class="container">
         <div class="col-12" style="border: #000 1px solid;">
-            <div id="parentWrapper">
+            <div id="parentWrapper" class="">
                 <div id="prevButton" class="button">Prev</div>
                 <div id="sliderImages">
                     <img src="img/slider1.png" class="img-responsive"><img src="img/slider2.png" class="img-responsive"><img src="img/slider3.png" class="img-responsive"><img src="img/slider4.png" class="img-responsive">
                 </div>
                 <div id="nextButton" class="button">next</div>
+				
+				<div class="overlay"></div>
             </div>
         </div>
     </div>
@@ -83,100 +98,59 @@
         	 We have 4 images! on each click we move <div> by -1170 to left using the x:property
         	 Each time we click the next button, we want to move an additional -1170 pixels because our image is 1170px width
         	*/		
-        	var slideWidth = $("#parentWrapper").outerWidth();			
+			var 	$wrapper = $("#parentWrapper");
+        	var 	slideWidth = $("#parentWrapper").outerWidth();			
             var    	$sliderImg = $("#sliderImages");	
             var    	$nextButton = $("#nextButton");
         	var 	$prevButton = $("#prevButton");
+        	var 	clickCount = 0;
+			
         	
-        	var $numbOfImgs = 4; // how mamny images?
-        	
-        	
-            $nextButton.click(function() {	
-        	
-        		tl = new TimelineMax();
-        	
-        		var y = $sliderImg.css("transform").split(', ')[4];
-        		var xVal = parseInt(y);	
-        		console.log("xVal is :: " + xVal);
-        		
-        		if(isNaN(xVal) == true ) {
-        			// this is TRUE, when page loads and user clicks PREV first time
-        			// We want the click on nextButton to move images on > right side.
-        			// First, we move the image all the way far to the Left. On each Next lick, we can move image to right 			
-        			// At every 4th Click, we rewind to x: 3510px. 
-        			tl.to($sliderImg, 2, {x: -slideWidth*3});  	// Moves elemetn to x: -3510px		
-        		}
-        		
-        		if (xVal == -slideWidth*3 ) {
-        			tl.to($sliderImg, 1, {x: -slideWidth*2}); // 1170*2 = 
-        		}
-        		if (xVal == -2*slideWidth ) {
-        			tl.to($sliderImg, 1, {x: -slideWidth}); // Moves element to -1170px
-        		}		
-        		if (xVal == -slideWidth ) {
-        			tl.to($sliderImg, 1, {x: 0}); 
-        		}
-        		if (xVal == 0 ) {
-        			tl.to($sliderImg, 1, {x: -3*slideWidth}); 
-        		}
-        		
+            $nextButton.click(function() {	         	
+        		clickCount++;
+				if (clickCount > 3){
+					clickCount = 0;
+				}			
+				//console.log(clickCount + ":: "+ -clickCount * slideWidth);			
+				TweenLite.to($sliderImg, 0.5, {x: -clickCount * slideWidth});           		
+            });
+        	        	
+        	$prevButton.click(function() {	              
+        		clickCount--;
+				if (clickCount < 0){
+					clickCount = 3;
+				}			
+				TweenLite.to($sliderImg, 0.5, {x: -clickCount * slideWidth});          		
             });
         	
-        	
-        	$prevButton.click(function() {	
-              
-        		t2 = new TimelineMax();
-        	  
-        		var y = $sliderImg.css("transform").split(', ')[4];
-        		var xVal = parseInt(y);	
-        		console.log("xVal is 1 :: " + xVal);
-        		
-        		if(isNaN(xVal) == true ) {
-        			// this is TRUE, when page loads and user clicks PREV first time
-        			// @ this point, the 1st frame of the image-slip is visible.
-        			t2.to($sliderImg, 1, {x: -slideWidth});  
-        		}		
-        		if (xVal == -slideWidth ) {
-        			t2.to($sliderImg, 1, {x: -2*slideWidth}); 
-        		}
-        		if (xVal == -slideWidth*2 ) {
-        			t2.to($sliderImg, 1, {x: -3*slideWidth}); 
-        		}
-        		if (xVal == -3*slideWidth ) {
-        			t2.to($sliderImg, 1, {x: 0}); 
-        		}		
-        		if (xVal == 0 ) {
-        			t2.to($sliderImg, 1, {x: -slideWidth}); 
-        		}		      
-        		
-            });
-        	
-        
-        	// ---------------- 	
-        	// t3 = new TimelineMax({repeat:3, repeatDelay:2});
-        	t3 = new TimelineMax({repeat:2, repeatDelay:4});
-        	t3.from($sliderImg, 2, {opacity:0, delay:0.5});
-        		
-            // TweenLite.to(icon, 2, {rotation:360, left:400, ease:Back.easeOut, delay:1});
-            t3.to($sliderImg, 1, {x: -slideWidth,  delay:5});
-            t3.to($sliderImg, 1, {x: -slideWidth*2,  delay:5});
-            t3.to($sliderImg, 1, {x: -slideWidth*3,  delay:5});
-        	
-        	
-        	
-        	var $wrapElmnt = $("#parentWrapper");
-        	
-        	$wrapElmnt.mouseenter(function(){
-        		t3.pause();
-        	    // t3.play();
+			function myFunction() {
+				clickCount++;
+				if (clickCount > 3){
+					clickCount = 0;
+				}
+				console.log(clickCount + ":: "+ -clickCount * slideWidth);			
+				TweenLite.to($sliderImg, 1, {x: -clickCount * slideWidth});
+			}
+			
+			function myStopFunction() {
+				clearInterval(myVar);
+			}
+			
+			function resumeInterval() {
+				myVar = setInterval(function() {myFunction();}, 6000);
+			}
+		
+			$wrapper.mouseenter(function(){        					
+				myStopFunction();
         	});
         	
-        	
-        	$wrapElmnt.mouseleave(function(){		
-        	    t3.play();
+        	$wrapper.mouseleave(function(){		
+        	    resumeInterval();
         	});
-        	
-        	
+			
+			var myVar = setInterval(function() {myFunction();}, 6000);
+			
+			
         });
     </script>
 
