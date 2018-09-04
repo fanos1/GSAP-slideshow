@@ -7,24 +7,22 @@
     <title>Image Slider</title>
     <link rel="stylesheet" type="text/css" href="framework.css" />
     <style type="text/css">
+		
         #parentWrapper {
 			position: relative;	
-			max-width: 1169px; /* images are 1170px, make the through-window 1px smaller on each side to accommodate for any javascript rounding number when element#img is moved to x aixis */
-			
+			max-width: 1169px; /* images are 1170px, make the through-window 1px smaller on each side to accommodate for any javascript rounding number when element#img is moved to x aixis */			
 			/* height: 375px; 
-				FOR RESPONSIVE PARENT WRAPPER WHICH WILL HOLDI MAGES, HEIGHT SHOULD BE 100% */
+				FOR RESPONSIVE PARENT WRAPPER WHICH WILL HOLDI MAGES, HEIGHT SHOULD BE 100% 
+			*/
 			height: 100%;		
 
 			padding: 0px;
 			margin-left: auto;
-			margin-right: auto;
-			
+			margin-right: auto;			
 			white-space: nowrap;
 			overflow: hidden;
-		
 		}
         	
-        		
 		#nextButton {
 			position: absolute;			
 			top: 50%;
@@ -40,16 +38,29 @@
 		#prevButton {
 			position: absolute;
 			top: 50%;
-			 transform: translateY(-50%); /* Vertically center. Top:50% Alone Doesnt Work */
-			left: 0%;
-			
-			z-index: 999;
-			
+				transform: translateY(-50%); /* Vertically center. Top:50% Alone Doesnt Work */
+			left: 0%;			
+			z-index: 999;			
 			cursor:pointer;
 			padding: 5px;
 			background-color: blue;
 		}
-        		
+		 
+		.firsTxt {					
+			position: absolute;
+			
+			/* Center text 
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			*/
+			top: 20%;
+			left: 10%;
+			
+			display: none;
+		}
+		
+			
 		/* 
 		.overlay {
 		  position: absolute;
@@ -70,18 +81,21 @@
 
     <div class="container">
         <div class="col-12" style="border: #000 1px solid;">
-            <div id="parentWrapper" class="">
+            <div id="parentWrapper">
                 <div id="prevButton" class="button">Prev</div>
                 <div id="sliderImages">
                     <img src="img/slider1.png" class="img-responsive"><img src="img/slider2.png" class="img-responsive"><img src="img/slider3.png" class="img-responsive"><img src="img/slider4.png" class="img-responsive">
                 </div>
                 <div id="nextButton" class="button">next</div>
                 <div class="overlay"></div>
+				
+				<h2 class="firsTxt">First Sldie!</h2>
+				<h2 class="firsTxt">Second slid!</h2>
+				<h2 class="firsTxt">Third Slide!</h2>
+				<h2 class="firsTxt">Fourth Slide!</h2>
             </div>
         </div>
     </div>
-
-
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
@@ -98,16 +112,19 @@
             var    	$sliderImg = $("#sliderImages");	
             var    	$nextButton = $("#nextButton");
         	var 	$prevButton = $("#prevButton");
+			var 	slideH2 = document.getElementsByClassName("firsTxt");
         	var 	clickCount = 0;
 			
+			// slideH2[0].style.transform = "scale(1)"; // 1st time page loads, scale text to normal size
+			slideH2[0].style.display = "block"; // 1st time page loads, display the text for the 1st image
         	
             $nextButton.click(function() {	         	
         		clickCount++;
 				if (clickCount > 3){
 					clickCount = 0;
-				}			
-				//console.log(clickCount + ":: "+ -clickCount * slideWidth);			
-				TweenLite.to($sliderImg, 0.5, {x: -clickCount * slideWidth});           		
+				}					
+				TweenLite.to($sliderImg, 0.5, {x: -clickCount * slideWidth});           	
+				textFunction(clickCount); // call
             });
         	        	
         	$prevButton.click(function() {	              
@@ -116,6 +133,7 @@
 					clickCount = 3;
 				}			
 				TweenLite.to($sliderImg, 0.5, {x: -clickCount * slideWidth});          		
+				textFunction(clickCount); // call
             });
         	
 			function myFunction() {
@@ -125,6 +143,8 @@
 				}
 				console.log(clickCount + ":: "+ -clickCount * slideWidth);			
 				TweenLite.to($sliderImg, 1, {x: -clickCount * slideWidth});
+				
+				textFunction(clickCount); // call
 			}
 			
 			function myStopFunction() {
@@ -144,6 +164,22 @@
         	});
 			
 			var myVar = setInterval(function() {myFunction();}, 6000);
+			
+			function textFunction(x) {
+				// First hide all text				 
+				var i;
+				for (i = 0; i < slideH2.length; i++) {
+					slideH2[i].style.display = "none";  
+				}				
+				// --x;
+				//console.log("x is :: " + x);
+				
+				// TweenLite.to(slideH2[x], 0.5,  {autoAlpha: 1, display:'block', scale:1, rotation:30});
+				// TweenLite.to(slideH2[x], 0.5,  {autoAlpha: 1, display:'block'});
+				
+				 TweenLite.fromTo(slideH2[x], 0.5, { rotation:30},  {autoAlpha: 1, display:'block',  rotation:0});
+				
+			}
 			
         });
 		
