@@ -57,6 +57,7 @@
 			top: 20%;
 			left: 10%;
 			
+			font-size: 3em;
 			display: none;
 		}
 		
@@ -71,6 +72,12 @@
 		  height: 100%;
 		} 
 		*/
+		
+		@media screen and (max-width: 600px) {
+		  .firsTxt {
+			font-size: 26px;
+		  }
+		}
     </style>
 
 </head>
@@ -177,7 +184,10 @@
 				// TweenLite.to(slideH2[x], 0.5,  {autoAlpha: 1, display:'block', scale:1, rotation:30});
 				// TweenLite.to(slideH2[x], 0.5,  {autoAlpha: 1, display:'block'});
 				
-				 TweenLite.fromTo(slideH2[x], 0.5, { rotation:30},  {autoAlpha: 1, display:'block',  rotation:0});
+				TweenLite.fromTo(slideH2[x], 0.5, 
+					{ rotation:30, scale:0.1}, 
+					{autoAlpha: 1, display:'block', rotation:0, scale:1}
+				);
 				
 			}
 			
