@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rotation 3d slider</title>   
+	<style>
+		html, body {
+		   height: 100%;
+		  background: #333;
+		  -webkit-font-smoothing: antialiased;
+		}
+		
+		.site {
+			width: 100%;
+			max-width: 1170px;
+			height: 100%;			
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.slide-container {
+		  position: relative;
+		  z-index: 2;
+		  width: 100%;				
+		  height: 100%; 
+		  overflow: hidden;
+		}
+
+		.sliders {
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  overflow: hidden;		  
+		  width: 100%;		  		  
+		  /* height: 100%; */
+		  background: #e74c3c;
+		}
+
+		#second {
+		  background: #27ae60;		  
+		  opacity:0;
+		}
+		
+		#third {
+			background: #27ae60;	
+			opacity:0;
+		}
+
+		
+
+	</style>
+  
+</head>
+
+
+
+<body>
+
+
+	
+	<div class="site">
+
+			<div class="slide-container">
+				<div class="sliders" id="first">
+					<!-- <img src="img/fullpage1.png" /> -->
+					<img src="img/slider1.png" />
+				</div>
+				<div class="sliders" id="second">
+					<!-- <img src="img/fullpage2.png" /> -->
+					<img src="img/slider2.png" />
+				</div>				
+				<div class="sliders" id="third">					
+					<img src="img/slider3.png" />
+				</div> 
+				
+			</div>
+	
+	</div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+
+
+    <script type="text/javascript">
+	
+		//var siteW = $(window).width();
+		var siteW = 1180;
+		var siteH = $(window).height();
+		
+		
+		TweenMax.set('.slide-container', { perspective: "1200px" }); 
+		
+		TweenMax.set('#first', { transformOrigin: "100% 50%", backfaceVisibility: 'hidden' });
+		TweenMax.set('#second', { transformOrigin: "0% 50%", backfaceVisibility: 'hidden' });
+		TweenMax.set('#second', {autoAlpha:1}); //Opacity was set to 0 with CSS, to prevent it from display on page lod
+		TweenMax.set('#third', { transformOrigin: "0% 50%", backfaceVisibility: 'hidden' });
+
+		var tlFlip = new TimelineMax({ yoyo: true, repeat: -1, delay: 1, repeatDelay: 3 });
+
+		var duration = 1.6;
+		
+		tlFlip
+			.set('#third', {autoAlpha:0} ) //opacity and visibility to hidden
+			.to('#first', duration, { x: -siteW, rotationY: -90, ease: Power2.easeInOut }, "start")		
+			.fromTo('#second', duration, 
+				{ x: siteW, rotationY: 90 }, 
+				{ x: 0, rotationY: 0, ease: Power2.easeInOut }, "start"
+			)						
+			.set('#third', {autoAlpha:1} ) //Reset opacity and visibility to 1
+			.set('#second', { transformOrigin: "100% 50%", backfaceVisibility: 'hidden' }) // #second element was transformed above, Retransform it to "100% 50%"
+			
+			//Start 2nd slide animation						
+			.to('#second', duration, {delay:3, x: -siteW, rotationY: -90, ease: Power2.easeInOut }, "startSecond")
+			.fromTo('#third', duration, 
+				{delay:3, x: siteW, rotationY: 90 }, 
+				{delay:3, x: 0, rotationY: 0, ease: Power2.easeInOut }, "startSecond"
+			)
+			;
+		
+	
+    </script>
+
+</body>
+
+</html>
