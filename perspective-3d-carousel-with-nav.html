@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rotation 3d slider</title>   
+	<style>
+		html, body {
+		   height: 100%;
+		  background: #333;
+		  -webkit-font-smoothing: antialiased;
+		}
+        .dot {
+			cursor: pointer;
+			height: 15px;
+			width: 15px;
+			margin: 0 2px;
+			background-color: #fff;
+			border-radius: 50%;
+			display: inline-block;
+			transition: background-color 0.6s ease;
+			
+			margin-top: 16px;
+			margin-bottom: 16px;
+		}
+		
+		.site {
+			width: 100%;
+			max-width: 1170px;
+			height: 100%;			
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		.slide-container {
+		  position: relative;
+		  /* z-index: 2; */
+		  width: 100%;				
+		  height: 100%; 
+		  overflow: hidden;
+		}
+
+		.sliders {
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		  overflow: hidden;		  
+		  width: 100%;		  		  
+		 
+		  background: #e74c3c;
+		}
+
+		#first {
+			z-index:3;			
+		}
+		#secon {
+		
+		}
+		#third {
+			
+		}
+		
+	</style>
+  
+</head>
+
+
+
+<body>
+	
+	<div class="site">
+        <div style="text-align:center">
+		  <span class="dot" id="first1"></span> 
+		  <span class="dot" id="secon2"></span> 
+		  <span class="dot" id="third3"></span> 
+		</div>
+	
+		<div class="slide-container">
+			<div class="sliders first" id="first">
+				<!--
+				<img src="img/fullpage1.png" />
+				-->
+				<img src="img/slider1.png" />  
+				
+			</div>
+			<div class="sliders second" id="secon">
+				<!--
+				<img src="img/fullpage2.png" /> 
+				--> 
+				<img src="img/slider2.png" /> 
+				
+			</div>	
+             
+			<div class="sliders" id="third">					
+				<!-- 
+				<img src="img/fullpage3.png" /> 
+				-->
+				<img src="img/slider3.png" />	
+				
+			</div>     
+		</div>
+		
+	</div>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.0/TweenMax.min.js"></script>
+
+	<script type="text/javascript">	
+
+            //var siteW = $(window).width();
+            var siteW = 1180;
+            var siteH = $(window).height();
+
+            TweenMax.set('.slide-container', { perspective: "1200px" }); 
+
+            var oldSlide = 'first'; // First time page loads, 1st image is displayed
+            var hiddenSlide = 'third';  // On 1st page load, this is hidden
+			
+            var duration = 2;
+            
+			
+			
+            function myFunction(destSlide) { 
+                  
+					var newSlide = destSlide.substring(0,5); // Get first 5 character
+					
+					console.log("New slide: " + newSlide); // first
+					console.log("OLD slide: " + oldSlide); // first
+					
+					// ===============
+					// Clicks from Left to Right
+					// ===============
+					// 1 :: 
+					if(newSlide == 'secon' && oldSlide == 'first') 
+					{ 		
+						fromLeft(newSlide, oldSlide, 'third'); // call 						
+						oldSlide = 'secon';
+					}	
+					// 2 ::   
+					if(newSlide == 'third' && oldSlide == 'secon')  
+					{
+						fromLeft(newSlide, oldSlide, 'first'); // call, 3rd param is unwanted slide to be hidden 						
+						oldSlide = 'third';
+					}				
+					// 3
+					if(newSlide == 'third' && oldSlide == 'first')  
+					{					
+						fromLeft(newSlide, oldSlide, 'secon'); // call, 3rd param is unwanted slide to be hidden 
+						oldSlide = 'third';
+					}
+			
+				
+					// ==================== ==================
+					// Backwards Clicks on Nav
+					// ==================== ==================
+					if(newSlide == 'first' && oldSlide == 'secon')  // 2den > 1e
+					{										
+						myAnimate(newSlide, oldSlide, 'third'); // call 
+						oldSlide = 'first';
+					}
+					
+					if(newSlide == 'secon' && oldSlide == 'third')  
+					{
+						myAnimate(newSlide, oldSlide, 'first'); // call, 'first' is unncessary slide 
+						oldSlide = 'secon';                        
+					}
+					if(newSlide == 'first' && oldSlide == 'third')  
+					{						                        					
+						myAnimate(newSlide, oldSlide, 'secon'); // call, 'first' is unncessary slide 						
+						oldSlide = 'first';
+						//tl3.invalidate(); // Flush any recoreded values, useful for restarting animation
+						//tl3.reverse();
+					}
+					
+            }
+			
+			function myAnimate(newSlide, oldSlide, hiddenSlide) 
+			{
+				console.log('UNNECESSARY SLIDE:: '+ hiddenSlide);
+				
+				// Clear previous rotation                        
+				TweenMax.set('#'+newSlide, {x:0, rotationY:0} ); 
+				TweenMax.set('#'+oldSlide, {x:0, rotationY:0} ); 
+
+				// Hide unecessary slide
+				TweenMax.set('#'+hiddenSlide, {autoAlpha:0} ); 
+
+				// Re-display necessary slides, Some might be hidden from before tween
+				TweenMax.set('#'+newSlide, {autoAlpha:1} ); 
+				TweenMax.set('#'+oldSlide, {autoAlpha:1} ); 
+
+				// TweenMax.set('#'+newSlide, { transformOrigin: "100% 50%", backfaceVisibility: 'hidden'} );
+				// TweenMax.set('#'+oldSlide, { transformOrigin: "0% 50%", backfaceVisibility: 'hidden'} ); 
+				TweenMax.set('#'+oldSlide, { transformOrigin: "100% 50%", backfaceVisibility: 'hidden'} );
+				TweenMax.set('#'+newSlide, { transformOrigin: "0% 50%", backfaceVisibility: 'hidden'} ); 
+								
+				
+				var tl4 = new TimelineMax();
+
+				tl4.to('#'+oldSlide, duration, { x: -siteW, rotationY: -90, ease: Power2.easeInOut }, "x")				
+				tl4.fromTo('#'+newSlide, duration, 
+					{ x: siteW, rotationY: 90 }, 
+					{ x: 0, rotationY: 0, ease: Power2.easeInOut }, "x"
+				);	
+				
+			}
+			
+			function fromLeft(newSlide, oldSlide, notNecessary) 
+			{
+				// console.log('UNNECESSARY SLIDE:: '+ notNecessary);
+				
+				// Clear previous rotation                        
+				TweenMax.set('#'+newSlide, {x:0, rotationY:0} ); 
+				TweenMax.set('#'+oldSlide, {x:0, rotationY:0} ); 
+
+				// Hide unecessary slide
+				TweenMax.set('#'+notNecessary, {autoAlpha:0} ); 
+
+				// Re-display necessary slides, Some might be hidden from before tween
+				TweenMax.set('#'+newSlide, {autoAlpha:1} ); 
+				TweenMax.set('#'+oldSlide, {autoAlpha:1} ); 
+
+				//TweenMax.set('#'+newSlide, { transformOrigin: "100% 50%", backfaceVisibility: 'hidden'} );
+				//TweenMax.set('#'+oldSlide, { transformOrigin: "0% 50%", backfaceVisibility: 'hidden'} ); 
+				TweenMax.set('#'+oldSlide, { transformOrigin: "100% 50%", backfaceVisibility: 'hidden'} );
+				TweenMax.set('#'+newSlide, { transformOrigin: "0% 50%", backfaceVisibility: 'hidden'} ); 
+								
+				
+				var tl4 = new TimelineMax();
+								
+				tl4.to('#'+oldSlide, duration, { x: -siteW, rotationY: -90, ease: Power2.easeInOut }, "x")				
+				tl4.fromTo('#'+newSlide, duration, 
+					{ x: siteW, rotationY: 90 }, 
+					{ x: 0, rotationY: 0, ease: Power2.easeInOut }, "x"
+				);	
+			}
+            
+            
+            document.getElementById("first1").addEventListener("click", function() {                   
+                myFunction(this.id);
+                // console.log(this.id); // 'first'
+            });
+
+            document.getElementById("secon2").addEventListener("click", function() {                   
+                myFunction(this.id);
+                // console.log(this.id); // 'secon'
+            });
+
+           document.getElementById("third3").addEventListener("click", function() {                   
+                myFunction(this.id);
+                // console.log(this.id); // 'first'
+            });
+
+        
+        
+    </script>
+	
+</body>
+</html>
